@@ -1,23 +1,27 @@
 import { useTheme } from '../themes/ThemeContext'
+import { palettes } from '../themes/palettes'
 import './PaletteSelector.css'
 
 export default function PaletteSelector() {
-  const { currentPalette, setPalette, availablePalettes } = useTheme()
+  const { currentPalette, setPalette } = useTheme()
 
   return (
     <div className="palette-selector">
-      <label htmlFor="palette-select">Theme:</label>
-      <select
-        id="palette-select"
-        value={currentPalette.name}
-        onChange={e => setPalette(e.target.value)}
-      >
-        {availablePalettes.map(name => (
-          <option key={name} value={name}>
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </option>
-        ))}
-      </select>
+      {Object.entries(palettes).map(([key, palette]) => (
+        <button
+          key={key}
+          className={`palette-option${currentPalette.name === palette.name ? ' active' : ''}`}
+          onClick={() => setPalette(key)}
+        >
+          <span
+            className="palette-dot"
+            style={{ backgroundColor: palette.background }}
+          />
+          <span className="palette-name">
+            {palette.name}
+          </span>
+        </button>
+      ))}
     </div>
   )
 }

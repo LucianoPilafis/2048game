@@ -76,6 +76,8 @@ export default function Game() {
         </div>
       </div>
 
+      <PaletteSelector />
+
       <div className="board" style={boardStyle}>
         {gameState.board.map((row, i) =>
           row.map((value, j) => (
@@ -83,8 +85,6 @@ export default function Game() {
           )),
         )}
       </div>
-
-      <PaletteSelector />
 
       {gameState.won && !gameState.gameOver && (
         <div className="message message-won">
