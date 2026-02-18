@@ -2,9 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 12px;
+  padding: 10px;
   max-width: 500px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .game-header {
@@ -71,12 +74,13 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 10px;
-  padding: 10px;
+  gap: 8px;
+  padding: 8px;
   border-radius: 6px;
-  width: 100%;
-  aspect-ratio: 1;
+  width: min(100%, 55vh, 500px);
+  height: min(55vh, 500px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .board-empty-cell {
@@ -140,8 +144,8 @@
 
 @media (max-width: 600px) {
   .game-container {
-    gap: 20px;
-    padding: 10px;
+    gap: 8px;
+    padding: 5px;
   }
 
   .game-header {
@@ -154,7 +158,9 @@
   }
 
   .board {
-    gap: 8px;
-    padding: 8px;
+    gap: 6px;
+    padding: 6px;
+    width: min(100%, 50vh, 500px);
+    height: min(50vh, 500px);
   }
 }
