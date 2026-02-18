@@ -36,10 +36,8 @@ export default function Game() {
           setGameState(prev => move(prev, 'right'))
           break
         case 'z':
-          if (e.ctrlKey || e.metaKey) {
-            e.preventDefault()
-            setGameState(prev => undo(prev))
-          }
+          e.preventDefault()
+          setGameState(prev => undo(prev))
           break
         case 'r':
           setGameState(initializeGame())
