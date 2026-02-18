@@ -8,7 +8,7 @@ export interface GameState {
   score: number
   gameOver: boolean
   won: boolean
-  history: Array<{ board: number[][]; score: number }>
+  previousState: { board: number[][]; score: number } | null
 }
 
 const GRID_SIZE = 4
@@ -36,7 +36,7 @@ export function initializeGame(): GameState {
     score: 0,
     gameOver: false,
     won: false,
-    history: [],
+    previousState: null,
   }
 }
 
@@ -74,11 +74,8 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
   const boardCopy = state.board.map(row => [...row])
   const prevScore = state.score
 
-  // Save to history before moving
-  const newHistory = [
-    ...state.history,
-    { board: state.board.map(row => [...row]), score: state.score },
-  ]
+  // Save snapshot before moving
+  const snapshot = { board: state.board.map(row => [...row]), score: state.score }
 
   let moved = false
 
@@ -108,7 +105,6 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
 
   if (!moved) {
     state.score = prevScore
-    state.history = newHistory.slice(0, -1)
     return state
   }
 
@@ -122,7 +118,7 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
     score: state.score,
     gameOver,
     won,
-    history: newHistory,
+    previousState: snapshot,
   }
 }
 
@@ -196,17 +192,16 @@ function hasWon(board: number[][]): boolean {
  * Undo the last move
  */
 export function undo(state: GameState): GameState {
-  if (state.history.length === 0) {
+  if (state.previousState === null) {
     return state
   }
 
-  const lastState = state.history[state.history.length - 1]
   return {
-    board: lastState.board.map(row => [...row]),
-    score: lastState.score,
+    board: state.previousState.board.map(row => [...row]),
+    score: state.previousState.score,
     gameOver: false,
     won: state.won,
-    history: state.history.slice(0, -1),
+    previousState: null,
   }
 }
 
