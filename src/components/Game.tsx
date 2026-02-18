@@ -68,7 +68,7 @@ export default function Game() {
           </button>
           <button
             onClick={() => setGameState(prev => undo(prev))}
-            disabled={gameState.history.length === 0}
+            disabled={gameState.previousState === null}
             className="btn-undo"
           >
             Undo
