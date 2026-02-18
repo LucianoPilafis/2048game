@@ -12,7 +12,6 @@ export interface GameState {
 }
 
 const GRID_SIZE = 4
-const SPAWN_PROBABILITY = 0.1
 const WIN_TILE = 2048
 
 /**
