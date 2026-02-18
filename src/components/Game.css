@@ -47,7 +47,8 @@
 }
 
 .btn-reset,
-.btn-undo {
+.btn-undo,
+.btn-history {
   padding: 10px 20px;
   background: #8f7a66;
   color: #f9f6f2;
@@ -60,12 +61,14 @@
 }
 
 .btn-reset:hover:not(:disabled),
-.btn-undo:hover:not(:disabled) {
+.btn-undo:hover:not(:disabled),
+.btn-history:hover:not(:disabled) {
   background: #9f8a76;
 }
 
 .btn-reset:disabled,
-.btn-undo:disabled {
+.btn-undo:disabled,
+.btn-history:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
