@@ -5,9 +5,10 @@ Based on the `Github Issue` below, follow the `Instructions` to select the appro
 ## Instructions
 
 - Based on the details in the `Github Issue`, select the appropriate command to execute.
-- IMPORTANT: Respond exclusively with '/' followed by the command to execute based on the `Command Mapping` below.
-- Use the command mapping to help you decide which command to respond with.
-- Don't examine the codebase just focus on the `Github Issue` and the `Command Mapping` below to determine the appropriate command to execute.
+- IMPORTANT: Respond with ONLY ONE of these four options, nothing else: `/chore`, `/bug`, `/feature`, or `0`.
+- Do NOT include any explanation, reasoning, file paths, or other text.
+- Do NOT examine the codebase. Focus only on the `Github Issue` text and the `Command Mapping` below.
+- Your entire response must be exactly one of: `/chore`, `/bug`, `/feature`, or `0`
 
 ## Command Mapping
 
