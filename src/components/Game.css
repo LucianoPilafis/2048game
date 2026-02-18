@@ -1,0 +1,160 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+  max-width: 500px;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.score-section {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 15px 25px;
+  border-radius: 6px;
+  text-align: center;
+  flex: 1;
+}
+
+.score-label {
+  font-size: 14px;
+  color: #776e65;
+  opacity: 0.7;
+  margin-bottom: 5px;
+}
+
+.score-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #776e65;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.btn-reset,
+.btn-undo {
+  padding: 10px 20px;
+  background: #8f7a66;
+  color: #f9f6f2;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-reset:hover:not(:disabled),
+.btn-undo:hover:not(:disabled) {
+  background: #9f8a76;
+}
+
+.btn-reset:disabled,
+.btn-undo:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  width: 100%;
+  aspect-ratio: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.board-empty-cell {
+  background: #cdc1b4;
+  border-radius: 6px;
+}
+
+.message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #f9f6f2;
+  padding: 40px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+}
+
+.message-won {
+  background: rgba(76, 175, 80, 0.9);
+}
+
+.message-over {
+  background: rgba(244, 67, 54, 0.9);
+}
+
+.message button {
+  padding: 12px 24px;
+  background: #f9f6f2;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.message button:hover {
+  background: #e8e0d0;
+}
+
+.instructions {
+  font-size: 13px;
+  color: #776e65;
+  text-align: center;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+.instructions p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .game-header {
+    flex-direction: column;
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .board {
+    gap: 8px;
+    padding: 8px;
+  }
+}

@@ -1,0 +1,24 @@
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 35px;
+  transition: all 0.15s ease-in-out;
+  min-width: 70px;
+  min-height: 70px;
+}
+
+.tile-value {
+  font-family: 'Arial', sans-serif;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .tile {
+    font-size: 24px;
+    min-width: 50px;
+    min-height: 50px;
+  }
+}

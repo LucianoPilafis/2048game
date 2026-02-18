@@ -1,0 +1,31 @@
+node_modules/
+
+# Builds / outputs
+dist/
+build/
+.vite/
+.vitest/
+coverage/
+.vercel/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Agents
+agents/
+
+# Env / secretos
+.env
+.env.*
+!.env.sample
+!.env.example
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
