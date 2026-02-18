@@ -1,21 +1,70 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   initializeGame,
   move,
   undo,
   GameState,
 } from '../game/logic'
+import { GameRun, loadHistory, addRun, getHighestTile } from '../game/history'
 import { useTheme } from '../themes/ThemeContext'
 import Tile from './Tile'
 import PaletteSelector from './PaletteSelector'
+import HistoryOverlay from './HistoryOverlay'
 import './Game.css'
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState>(initializeGame())
+  const [historyRuns, setHistoryRuns] = useState<GameRun[]>([])
+  const [showHistory, setShowHistory] = useState(false)
   const { currentPalette } = useTheme()
+  const gameStartRef = useRef<number>(Date.now())
+  const savedRef = useRef(false)
+
+  useEffect(() => {
+    setHistoryRuns(loadHistory())
+  }, [])
+
+  const saveCurrentRun = useCallback(() => {
+    if (savedRef.current) return
+    // Only save if the game has had at least one move
+    if (gameState.previousState === null && gameState.score === 0) return
+
+    const run: GameRun = {
+      id: String(Date.now()),
+      timestamp: Date.now(),
+      finalScore: gameState.score,
+      highestTile: getHighestTile(gameState.board),
+      durationMs: Date.now() - gameStartRef.current,
+    }
+    const updated = addRun(run)
+    setHistoryRuns(updated)
+    savedRef.current = true
+  }, [gameState])
+
+  // Auto-save when game over
+  useEffect(() => {
+    if (gameState.gameOver) {
+      saveCurrentRun()
+    }
+  }, [gameState.gameOver, saveCurrentRun])
+
+  const handleNewGame = useCallback(() => {
+    saveCurrentRun()
+    setGameState(initializeGame())
+    gameStartRef.current = Date.now()
+    savedRef.current = false
+  }, [saveCurrentRun])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (showHistory) {
+        if (e.key === 'Escape') {
+          e.preventDefault()
+          setShowHistory(false)
+        }
+        return
+      }
+
       if (gameState.gameOver && e.key !== 'r') return
 
       switch (e.key) {
@@ -40,14 +89,14 @@ export default function Game() {
           setGameState(prev => undo(prev))
           break
         case 'r':
-          setGameState(initializeGame())
+          handleNewGame()
           break
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [gameState])
+  }, [gameState, showHistory, handleNewGame])
 
   const boardStyle = {
     backgroundColor: currentPalette.background,
@@ -61,7 +110,7 @@ export default function Game() {
           <div className="score-value">{gameState.score}</div>
         </div>
         <div className="controls">
-          <button onClick={() => setGameState(initializeGame())} className="btn-reset">
+          <button onClick={handleNewGame} className="btn-reset">
             New Game
           </button>
           <button
@@ -70,6 +119,9 @@ export default function Game() {
             className="btn-undo"
           >
             Undo
+          </button>
+          <button onClick={() => setShowHistory(true)} className="btn-history">
+            History
           </button>
         </div>
       </div>
@@ -87,15 +139,19 @@ export default function Game() {
       {gameState.won && !gameState.gameOver && (
         <div className="message message-won">
           🎉 You Won!
-          <button onClick={() => setGameState(initializeGame())}>Play Again</button>
+          <button onClick={handleNewGame}>Play Again</button>
         </div>
       )}
 
       {gameState.gameOver && (
         <div className="message message-over">
           Game Over!
-          <button onClick={() => setGameState(initializeGame())}>Try Again</button>
+          <button onClick={handleNewGame}>Try Again</button>
         </div>
+      )}
+
+      {showHistory && (
+        <HistoryOverlay runs={historyRuns} onClose={() => setShowHistory(false)} />
       )}
 
       <div className="instructions">
