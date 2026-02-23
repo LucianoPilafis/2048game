@@ -4,7 +4,6 @@ import { palettes, Palette } from './palettes'
 interface ThemeContextType {
   currentPalette: Palette
   setPalette: (paletteName: string) => void
-  availablePalettes: string[]
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -20,10 +19,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const availablePalettes = Object.keys(palettes)
-
   return (
-    <ThemeContext.Provider value={{ currentPalette, setPalette, availablePalettes }}>
+    <ThemeContext.Provider value={{ currentPalette, setPalette }}>
       {children}
     </ThemeContext.Provider>
   )

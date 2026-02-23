@@ -8,7 +8,7 @@ export interface GameState {
   score: number
   gameOver: boolean
   won: boolean
-  previousState: { board: number[][]; score: number } | null
+  previousState: { board: number[][]; score: number; won: boolean } | null
 }
 
 const GRID_SIZE = 4
@@ -72,10 +72,14 @@ function getEmptyTiles(board: number[][]): Array<[number, number]> {
  */
 export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'down'): GameState {
   const boardCopy = state.board.map(row => [...row])
-  const prevScore = state.score
+  let nextScore = state.score
 
   // Save snapshot before moving
-  const snapshot = { board: state.board.map(row => [...row]), score: state.score }
+  const snapshot = {
+    board: state.board.map(row => [...row]),
+    score: state.score,
+    won: state.won,
+  }
 
   let moved = false
 
@@ -87,7 +91,7 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
         moved = true
       }
       boardCopy[i] = result.row
-      state.score += result.score
+      nextScore += result.score
     }
   } else {
     for (let j = 0; j < GRID_SIZE; j++) {
@@ -99,12 +103,11 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
       for (let i = 0; i < GRID_SIZE; i++) {
         boardCopy[i][j] = result.row[i]
       }
-      state.score += result.score
+      nextScore += result.score
     }
   }
 
   if (!moved) {
-    state.score = prevScore
     return state
   }
 
@@ -115,7 +118,7 @@ export function move(state: GameState, direction: 'left' | 'right' | 'up' | 'dow
 
   return {
     board: boardCopy,
-    score: state.score,
+    score: nextScore,
     gameOver,
     won,
     previousState: snapshot,
@@ -200,7 +203,7 @@ export function undo(state: GameState): GameState {
     board: state.previousState.board.map(row => [...row]),
     score: state.previousState.score,
     gameOver: false,
-    won: state.won,
+    won: state.previousState.won,
     previousState: null,
   }
 }

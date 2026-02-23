@@ -5,14 +5,12 @@ import sys
 import os
 import json
 import re
-import logging
 from typing import Optional, List, Dict, Any, Tuple, Final
 from dotenv import load_dotenv
 from .data_types import (
     AgentPromptRequest,
     AgentPromptResponse,
     AgentTemplateRequest,
-    ClaudeCodeResultMessage,
     SlashCommand,
 )
 
@@ -221,7 +219,7 @@ def prompt_claude_code(request: AgentPromptRequest) -> AgentPromptResponse:
             messages, result_message = parse_jsonl_output(request.output_file)
 
             # Convert JSONL to JSON array file
-            json_file = convert_jsonl_to_json(request.output_file)
+            convert_jsonl_to_json(request.output_file)
 
             if result_message:
                 # Extract session_id from result message

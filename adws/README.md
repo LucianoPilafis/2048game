@@ -88,11 +88,6 @@ uv run adw_test.py 123 <adw-id>    # Test phase only
 uv run adw_review.py 123 <adw-id>  # Review phase only
 uv run adw_document.py 123 <adw-id>  # Documentation phase only
 
-# Run continuous monitoring (polls every 20 seconds)
-uv run adw_triggers/trigger_cron.py
-
-# Start webhook server (for instant GitHub events)
-uv run adw_triggers/trigger_webhook.py
 ```
 
 ## ADW Workflow Scripts
@@ -318,47 +313,6 @@ uv run adw_sdlc.py <issue-number> [adw-id]
 - Review report with screenshots
 - Complete documentation in `app_docs/`
 
-### Automation Triggers
-
-#### trigger_cron.py - Polling Monitor
-Continuously monitors GitHub for triggers.
-
-**Usage:**
-```bash
-uv run adw_triggers/trigger_cron.py
-```
-
-**Triggers on:**
-- New issues with no comments
-- Any issue where latest comment is exactly "adw"
-- Polls every 20 seconds
-
-**Workflow selection:**
-- Uses `adw_plan_build.py` by default
-- Excludes `adw_build` (implementation-only) workflows
-
-#### trigger_webhook.py - Real-time Events
-Webhook server for instant GitHub event processing.
-
-**Usage:**
-```bash
-uv run adw_triggers/trigger_webhook.py
-```
-
-**Configuration:**
-- Default port: 8001
-- Endpoints:
-  - `/gh-webhook` - GitHub event receiver
-  - `/health` - Health check
-- GitHub webhook settings:
-  - Payload URL: `https://your-domain.com/gh-webhook`
-  - Content type: `application/json`
-  - Events: Issues, Issue comments
-
-**Security:**
-- Validates GitHub webhook signatures
-- Requires `GITHUB_WEBHOOK_SECRET` environment variable
-
 ## How ADW Works
 
 1. **Issue Classification**: Analyzes GitHub issue and determines type:
@@ -419,20 +373,11 @@ uv run adw_build.py
 uv run adw_test.py 789
 ```
 
-### Enable automatic processing
+### Trigger Mode
+Manual only. Run workflows explicitly when you decide, for example:
 ```bash
-# Start cron monitoring
-uv run adw_triggers/trigger_cron.py
-# New issues are processed automatically
-# Users can comment "adw" to trigger processing
-```
-
-### Deploy webhook for instant response
-```bash
-# Start webhook server
-uv run adw_triggers/trigger_webhook.py
-# Configure in GitHub settings
-# Issues processed immediately on creation
+uv run adw_plan_build.py 789
+uv run adw_sdlc.py 789
 ```
 
 ## Troubleshooting

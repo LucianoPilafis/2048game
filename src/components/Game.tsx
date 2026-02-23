@@ -57,6 +57,9 @@ export default function Game() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const normalizedKey = e.key.toLowerCase()
+      const isUndoShortcut = normalizedKey === 'z' && (e.ctrlKey || e.metaKey || !e.shiftKey)
+
       if (showHistory) {
         if (e.key === 'Escape') {
           e.preventDefault()
@@ -65,7 +68,7 @@ export default function Game() {
         return
       }
 
-      if (gameState.gameOver && e.key !== 'r') return
+      if (gameState.gameOver && normalizedKey !== 'r') return
 
       switch (e.key) {
         case 'ArrowUp':
@@ -84,12 +87,21 @@ export default function Game() {
           e.preventDefault()
           setGameState(prev => move(prev, 'right'))
           break
+      }
+
+      if (isUndoShortcut) {
+        e.preventDefault()
+        setGameState(prev => undo(prev))
+        return
+      }
+
+      switch (normalizedKey) {
+        case 'r':
+          handleNewGame()
+          break
         case 'z':
           e.preventDefault()
           setGameState(prev => undo(prev))
-          break
-        case 'r':
-          handleNewGame()
           break
       }
     }

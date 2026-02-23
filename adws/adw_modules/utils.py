@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Any, TypeVar, Type, Union, Dict
 
 T = TypeVar('T')
+ADW_ID_PATTERN = re.compile(r"^[a-f0-9]{8}$")
 
 
 def make_adw_id() -> str:
@@ -17,12 +18,21 @@ def make_adw_id() -> str:
     return str(uuid.uuid4())[:8]
 
 
+def validate_adw_id(adw_id: str) -> bool:
+    """Validate ADW ID format.
+
+    ADW IDs are restricted to 8 lowercase hex characters to prevent
+    unsafe filesystem path usage and maintain consistent workflow IDs.
+    """
+    return bool(ADW_ID_PATTERN.fullmatch(adw_id))
+
+
 def setup_logger(adw_id: str, trigger_type: str = "adw_plan_build") -> logging.Logger:
     """Set up logger that writes to both console and file using adw_id.
     
     Args:
         adw_id: The ADW workflow ID
-        trigger_type: Type of trigger (adw_plan_build, trigger_webhook, etc.)
+        trigger_type: Type of run context (adw_plan_build, manual_run, etc.)
     
     Returns:
         Configured logger instance

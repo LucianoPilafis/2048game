@@ -25,7 +25,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from adw_modules.state import ADWState
-from adw_modules.git_ops import commit_changes, finalize_git_operations, get_current_branch
+from adw_modules.git_ops import commit_changes, finalize_git_operations
 from adw_modules.github import fetch_issue, make_issue_comment, get_repo_url, extract_repo_path
 from adw_modules.workflow_ops import (
     implement_plan,

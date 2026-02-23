@@ -17,10 +17,11 @@ import subprocess
 import sys
 import os
 import json
+import re
 from typing import Dict, List, Optional
 from .data_types import GitHubIssue, GitHubIssueListItem, GitHubComment
 
-# Bot identifier to prevent webhook loops and filter bot comments
+# Bot identifier to prevent bot loops and filter bot comments
 ADW_BOT_IDENTIFIER = "[ADW-BOT]"
 
 
@@ -71,9 +72,25 @@ def get_repo_url() -> str:
 
 
 def extract_repo_path(github_url: str) -> str:
-    """Extract owner/repo from GitHub URL."""
-    # Handle both https://github.com/owner/repo and https://github.com/owner/repo.git
-    return github_url.replace("https://github.com/", "").replace(".git", "")
+    """Extract owner/repo from GitHub URL.
+
+    Supported formats:
+    - https://github.com/owner/repo(.git)
+    - git@github.com:owner/repo(.git)
+    """
+    url = github_url.strip()
+
+    https_match = re.match(r"^https://github\.com/([^/]+/[^/]+?)(?:\.git)?$", url)
+    if https_match:
+        return https_match.group(1)
+
+    ssh_match = re.match(r"^git@github\.com:([^/]+/[^/]+?)(?:\.git)?$", url)
+    if ssh_match:
+        return ssh_match.group(1)
+
+    raise ValueError(
+        f"Unsupported GitHub remote URL format: {github_url}. Expected HTTPS or SSH GitHub remote."
+    )
 
 
 def fetch_issue(issue_number: str, repo_path: str) -> GitHubIssue:

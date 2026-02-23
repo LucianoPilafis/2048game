@@ -10,6 +10,7 @@ import sys
 import logging
 from typing import Dict, Any, Optional
 from adw_modules.data_types import ADWStateData
+from adw_modules.utils import validate_adw_id
 
 
 class ADWState:
@@ -25,6 +26,10 @@ class ADWState:
         """
         if not adw_id:
             raise ValueError("adw_id is required for ADWState")
+        if not validate_adw_id(adw_id):
+            raise ValueError(
+                f"Invalid adw_id '{adw_id}'. Expected 8 lowercase hex characters."
+            )
         
         self.adw_id = adw_id
         # Start with minimal state

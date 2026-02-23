@@ -16,7 +16,7 @@ from adw_modules.data_types import (
 from adw_modules.agent import execute_template
 from adw_modules.github import get_repo_url, extract_repo_path, ADW_BOT_IDENTIFIER
 from adw_modules.state import ADWState
-from adw_modules.utils import parse_json
+from adw_modules.utils import parse_json, validate_adw_id
 
 
 # Agent name constants
@@ -45,7 +45,7 @@ def format_issue_message(
     adw_id: str, agent_name: str, message: str, session_id: Optional[str] = None
 ) -> str:
     """Format a message for issue comments with ADW tracking and bot identifier."""
-    # Always include ADW_BOT_IDENTIFIER to prevent webhook loops
+    # Always include ADW_BOT_IDENTIFIER to prevent bot-comment loops
     if session_id:
         return f"{ADW_BOT_IDENTIFIER} {adw_id}_{agent_name}_{session_id}: {message}"
     return f"{ADW_BOT_IDENTIFIER} {adw_id}_{agent_name}: {message}"
@@ -365,6 +365,10 @@ def ensure_adw_id(
     """
     # If ADW ID provided, check if state exists
     if adw_id:
+        if not validate_adw_id(adw_id):
+            raise ValueError(
+                f"Invalid adw_id '{adw_id}'. Expected 8 lowercase hex characters."
+            )
         state = ADWState.load(adw_id, logger)
         if state:
             if logger:
@@ -550,7 +554,7 @@ def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
 
     if result.returncode == 0:
         files = result.stdout.strip().split("\n")
-        spec_files = [f for f in files if f.startswith("spec/") and f.endswith(".md")]
+        spec_files = [f for f in files if f.startswith("specs/") and f.endswith(".md")]
 
         if spec_files:
             # Use the first spec file found
@@ -572,7 +576,7 @@ def find_spec_file(state: ADWState, logger: logging.Logger) -> Optional[str]:
             # Look for spec files matching the pattern
             import glob
 
-            pattern = f"spec/issue-{issue_num}-adw-{adw_id}*.md"
+            pattern = f"specs/issue-{issue_num}-adw-{adw_id}*.md"
             spec_files = glob.glob(pattern)
 
             if spec_files:

@@ -44,7 +44,7 @@ from adw_modules.github import (
     make_issue_comment,
     get_repo_url,
 )
-from adw_modules.utils import make_adw_id, setup_logger, parse_json
+from adw_modules.utils import setup_logger, parse_json
 from adw_modules.state import ADWState
 from adw_modules.git_ops import commit_changes, finalize_git_operations
 from adw_modules.workflow_ops import (
@@ -59,7 +59,6 @@ from adw_modules.workflow_ops import (
 # Agent name constants
 AGENT_TESTER = "test_runner"
 AGENT_E2E_TESTER = "e2e_test_runner"
-AGENT_BRANCH_GENERATOR = "branch_generator"
 
 # Maximum number of test retry attempts after resolution
 MAX_TEST_RETRY_ATTEMPTS = 4
@@ -1042,7 +1041,19 @@ def main():
         )
         # Don't exit on commit error, continue to report final status
     else:
-        logger.info(f"Test results committed: {commit_msg}")
+        success, commit_error = commit_changes(commit_msg)
+        if success:
+            logger.info(f"Test results committed: {commit_msg}")
+        else:
+            logger.error(f"Error committing test results: {commit_error}")
+            make_issue_comment(
+                issue_number,
+                format_issue_message(
+                    adw_id,
+                    AGENT_TESTER,
+                    f"❌ Error committing test results: {commit_error}",
+                ),
+            )
 
     # Log comprehensive test results to the issue
     log_test_results(state, results, e2e_results, logger)
